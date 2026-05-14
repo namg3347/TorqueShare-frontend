@@ -1,4 +1,4 @@
-import { handleResponse } from "./httpClient";
+import { handleResponse } from "./HttpClient";
 
 const BASE_URL = "https://torqueshare.onrender.com";
 
