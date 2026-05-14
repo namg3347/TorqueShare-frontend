@@ -13,6 +13,24 @@ import {
 
 import { generateUploadUrl } from "../services/UploadService";
 
+const MAX_FILE_SIZE =
+    500 * 1024 * 1024;
+
+const ALLOWED_TYPES = new Set([
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "application/pdf",
+    "application/zip",
+    "video/mp4",
+    "video/webm",
+    "video/quicktime",
+    "video/matroska",
+    "video/x-matroska"
+]);
+
+const SLUG_REGEX = /^[a-zA-Z0-9-_]+$/;
+
 export default function UploadForm() {
 
     const [slugWord, setSlugWord] = useState("");
@@ -36,7 +54,38 @@ export default function UploadForm() {
         }
 
         if (!slugWord.trim()) {
-            setStatus("Please enter a slug word");
+
+            setStatus("Slug is required");
+            return;
+        }
+
+        if (!SLUG_REGEX.test(slugWord)) {
+
+            setError("Slug can only contain letters, numbers, - and _");
+            return;
+        }
+
+        if (slugWord.length < 3 || slugWord.length > 50) {
+
+            setError("Slug must be between 3 and 50 characters");
+            return;
+        }
+
+        if (!ALLOWED_TYPES.has(file.type)) {
+
+            setError("Unsupported file type");
+            return;
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+
+            setError("File size exceeds 500MB");
+            return;
+        }
+
+        if (message.length > 500) {
+
+            setStatus("Message too long");
             return;
         }
 
@@ -80,7 +129,7 @@ export default function UploadForm() {
 
             //Generates download endpoint
             setDownloadUrl(
-                `http://localhost:5173/download/${data.slug}`
+                `https://torque-share.vercel.app/download/${data.slug}`
             );
 
         } catch (error) {
@@ -95,7 +144,11 @@ export default function UploadForm() {
 
                     setError("Too many requests");
 
-                } else {
+                } else if(error.status === 400) {
+                    
+                    setError("invalid file size or file type");
+
+                }else {
 
                     setError(error.message);
                 }
