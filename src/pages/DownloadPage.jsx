@@ -19,9 +19,7 @@ import {
     Button
 } from "@mui/material";
 
-import {
-    fetchDownloadData
-} from "../services/downloadService";
+import {fetchDownloadData} from "../services/DownloadService";
 
 export default function DownloadPage() {
 

@@ -11,7 +11,7 @@ import {
     Alert
 } from "@mui/material";
 
-import { generateUploadUrl } from "../services/uploadService";
+import { generateUploadUrl } from "../services/UploadService";
 
 export default function UploadForm() {
 
